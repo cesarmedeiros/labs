@@ -9,13 +9,13 @@
 
 	var bar_width = 100;
 	var bar_height = 20;
-	var bar_x = 0;
+	var bar_x = 200;
 	var bar_y = screen_height - bar_height - 5;
 	var bar_speed = 20;
 
 	var ball_radius = 10;
 	var ball_x = screen_width / 2;
-	var ball_y = bar_y - ball_radius;
+	var ball_y = bar_y - ball_radius - 5;
 	var ball_moving = false;
 	var ball_xdirection = 1;
 	var ball_ydirection = -1;
@@ -35,14 +35,14 @@
 	canvas.width = screen_width;
 	canvas.height = screen_height;
 
-	function bar_collided(){
+	var bar_collided = function(){
 		var xspace = ball_x >= bar_x && ball_x <= bar_x + bar_width;
 		var yspace = ball_y + ball_speed + ball_radius > bar_y;
 
 		return xspace && yspace;
 	}
 	
-	function update(){
+	var update = function(){
 		//clear the screen
 		ctx.fillStyle = "white";
 		ctx.fillRect(0, 0, screen_width, screen_height);
