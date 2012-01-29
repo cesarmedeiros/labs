@@ -9,9 +9,9 @@
 
 	var bar_width = 100;
 	var bar_height = 20;
-	var bar_x = (screen_width - bar_width) / 2;
+	var bar_x = 0;
 	var bar_y = screen_height - bar_height - 5;
-	var bar_speed = 10;
+	var bar_speed = 20;
 
 	var ball_radius = 10;
 	var ball_x = screen_width / 2;
@@ -19,7 +19,10 @@
 	var ball_moving = false;
 	var ball_xdirection = 1;
 	var ball_ydirection = -1;
-	var ball_speed = 10;
+	var ball_speed = 5;
+
+	var brick_width = 50;
+	var brick_height = 20;
 	
 	//keys
 	var KEY_LEFT = 37;
@@ -31,6 +34,13 @@
 	
 	canvas.width = screen_width;
 	canvas.height = screen_height;
+
+	function bar_collided(){
+		var xspace = ball_x >= bar_x && ball_x <= bar_x + bar_width;
+		var yspace = ball_y + ball_speed + ball_radius > bar_y;
+
+		return xspace && yspace;
+	}
 	
 	function update(){
 		//clear the screen
@@ -53,7 +63,7 @@
 				ball_xdirection *= -1;
 			ball_x += ball_speed * ball_xdirection;
 				
-			if(ball_y - ball_speed <= ball_radius)
+			if(ball_y - ball_speed <= ball_radius / 2 || bar_collided())
 				ball_ydirection *= -1;
 			ball_y += ball_speed * ball_ydirection;
 
@@ -66,18 +76,18 @@
 
 	document.onkeydown = function(e){
 		if(e.keyCode == KEY_LEFT){
-			if(bar_x - bar_speed > 0)
+			if(bar_x - bar_speed >= 0)
 				bar_x -= bar_speed;
 		}
 		if(e.keyCode == KEY_RIGHT){
-			if(bar_x < screen_width - bar_width - 10)
+			if(bar_x < screen_width - bar_width)
 				bar_x += bar_speed;
 		}
 		if(e.keyCode == KEY_SPACE){
 			ball_moving = true;
 		}
 	}
-	//update();
-	setInterval(update, 24);
+	
+	setInterval(update, 20);
 	
 })();
