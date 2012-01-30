@@ -106,3 +106,4 @@
 	setInterval(update, 20);
 	
 })();
+
