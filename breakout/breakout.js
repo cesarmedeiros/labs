@@ -23,6 +23,8 @@
 
 	var brick_width = 50;
 	var brick_height = 20;
+	var brick_lines = 5;
+	var brick_columns = screen_width / brick_width;
 	
 	//keys
 	var KEY_LEFT = 37;
@@ -70,6 +72,19 @@
 			if(ball_y > screen_height + ball_speed){
 				alert("Game over!");
 				ball_moving = false;
+			}
+		}
+
+		//draw bricks
+		ctx.fillStyle = "#5FF";
+		ctx.strokeStyle = "black";
+		ctx.lineWidth = 2;
+		for(var i=0; i<brick_lines; i++){
+			for(var j=0; j<brick_columns; j++){
+				ctx.beginPath();
+				ctx.rect(j*brick_width, i*brick_height, brick_width, brick_height);
+				ctx.fill();
+				ctx.stroke();
 			}
 		}
 	}
