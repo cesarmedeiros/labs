@@ -36,6 +36,17 @@
 	
 	canvas.width = screen_width;
 	canvas.height = screen_height;
+	
+	//matriz q identifica os blocos presentes=1(estado inicial) ou destruídos=0
+	var bricks_board = new Array();
+	
+	
+	for(var i=0; i<brick_lines; i++){
+		bricks_board[i] = new Array();
+		for(var j=0; j<brick_columns; j++){
+			bricks_board[i][j] = 1;
+		}
+	}
 
 	var bar_collided = function(){
 		var xspace = ball_x >= bar_x && ball_x <= bar_x + bar_width;
@@ -43,6 +54,14 @@
 
 		return xspace && yspace;
 	}
+	
+	var bricks_collided = function(ball_x, ball_y){
+		var xspace = ball_x/brick_width;
+		var yspace = ball_y/brick_height;
+		
+		return [xspace,yspace];
+	}
+	
 	
 	var update = function(){
 		//clear the screen
@@ -61,13 +80,22 @@
 		ctx.fill();
 
 		if(ball_moving){
-			if(ball_x - ball_speed <= 0 || ball_x >= screen_width - ball_radius)
-				ball_xdirection *= -1;
-			ball_x += ball_speed * ball_xdirection;
-				
-			if(ball_y - ball_speed <= ball_radius / 2 || bar_collided())
+			//alert(ball_y);
+			bricks_point = bricks_collided(ball_x, ball_y);
+			if (bricks_point[0]>0 && bricks_point[0]<=10 && bricks_point[1]>0 && bricks_point[1]<=5 && (bricks_board[parseInt(bricks_point[1],10)-1][parseInt(bricks_point[0],10)]==1)){
+				bricks_board[parseInt(bricks_point[1],10)-1][parseInt(bricks_point[0],10)] = 0;
+
 				ball_ydirection *= -1;
+			}
+			else {
+				if(ball_x - ball_speed <= 0 || ball_x >= screen_width - ball_radius)
+					ball_xdirection *= -1;
+				if(ball_y - ball_speed <= ball_radius / 2 || bar_collided())
+					ball_ydirection *= -1;
+			}
+			ball_x += ball_speed * ball_xdirection;	
 			ball_y += ball_speed * ball_ydirection;
+			
 
 			if(ball_y > screen_height + ball_speed){
 				alert("Game over!");
@@ -81,10 +109,12 @@
 		ctx.lineWidth = 2;
 		for(var i=0; i<brick_lines; i++){
 			for(var j=0; j<brick_columns; j++){
-				ctx.beginPath();
-				ctx.rect(j*brick_width, i*brick_height, brick_width, brick_height);
-				ctx.fill();
-				ctx.stroke();
+				if (bricks_board[i][j]==1) {
+					ctx.beginPath();
+					ctx.rect(j*brick_width, i*brick_height, brick_width, brick_height);
+					ctx.fill();
+					ctx.stroke();
+				}
 			}
 		}
 	}
