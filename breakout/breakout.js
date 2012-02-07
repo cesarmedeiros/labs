@@ -25,6 +25,7 @@
 	var brick_height = 20;
 	var brick_lines = 5;
 	var brick_columns = screen_width / brick_width;
+	var bricks = brick_lines * Math.floor(brick_columns);
 	
 	//keys
 	var KEY_LEFT = 37;
@@ -41,9 +42,9 @@
 	var bricks_board = new Array();
 	
 	
-	for(var i=0; i<brick_lines; i++){
+	for(var i=0; i<brick_columns; i++){
 		bricks_board[i] = new Array();
-		for(var j=0; j<brick_columns; j++){
+		for(var j=0; j<brick_lines; j++){
 			bricks_board[i][j] = 1;
 		}
 	}
@@ -56,12 +57,28 @@
 	}
 	
 	var bricks_collided = function(ball_x, ball_y){
-		var xspace = ball_x/brick_width;
-		var yspace = ball_y/brick_height;
+		var xspace = Math.floor((ball_x + ball_radius)/brick_width);
+		var yspace = Math.floor((ball_y - ball_radius - ball_speed)/brick_height);
 		
-		return [xspace,yspace];
+/*		var valido = xspace>=0 && xspace<=9 && yspace>=0 && yspace<=4;
+		if (valido==true){
+		var elebi = document.getElementById('coordX');
+		elebi.value=bricks;
+		//alert("colidi");
+		}*/
+		return [Math.floor(xspace), Math.floor(yspace), (xspace>=0 && xspace<=9 && yspace>=0 && yspace<=4)];
 	}
 	
+	var bricks_draw = function(column, line){
+		ctx.fillStyle = "#5FF";
+		ctx.strokeStyle = "black";
+		ctx.lineWidth = 2;
+		ctx.beginPath();
+		ctx.rect(column*brick_width, line*brick_height, brick_width, brick_height);
+		ctx.fill();
+		ctx.stroke();
+		
+	} 
 	
 	var update = function(){
 		//clear the screen
@@ -80,19 +97,23 @@
 		ctx.fill();
 
 		if(ball_moving){
-			//alert(ball_y);
 			bricks_point = bricks_collided(ball_x, ball_y);
-			if (bricks_point[0]>0 && bricks_point[0]<=10 && bricks_point[1]>0 && bricks_point[1]<=5 && (bricks_board[parseInt(bricks_point[1],10)-1][parseInt(bricks_point[0],10)]==1)){
-				bricks_board[parseInt(bricks_point[1],10)-1][parseInt(bricks_point[0],10)] = 0;
-
-				ball_ydirection *= -1;
-			}
-			else {
-				if(ball_x - ball_speed <= 0 || ball_x >= screen_width - ball_radius)
-					ball_xdirection *= -1;
-				if(ball_y - ball_speed <= ball_radius / 2 || bar_collided())
+			if (bricks_point[2]==true) {
+				if (bricks_board[bricks_point[0]][bricks_point[1]]==1) {
 					ball_ydirection *= -1;
-			}
+					bricks_board[bricks_point[0]][bricks_point[1]]=0;
+					bricks--;
+					if (bricks==0){
+						alert('Parabés, voce ganhou!');
+						ball_moving = false;
+					}
+				}
+				}
+			if(ball_x - ball_speed <= 0 || ball_x >= screen_width - ball_radius)
+				ball_xdirection *= -1;
+			if(ball_y - ball_speed <= ball_radius / 2 || bar_collided())
+				ball_ydirection *= -1;
+			
 			ball_x += ball_speed * ball_xdirection;	
 			ball_y += ball_speed * ball_ydirection;
 			
@@ -107,13 +128,10 @@
 		ctx.fillStyle = "#5FF";
 		ctx.strokeStyle = "black";
 		ctx.lineWidth = 2;
-		for(var i=0; i<brick_lines; i++){
-			for(var j=0; j<brick_columns; j++){
+		for(var i=0; i<brick_columns; i++){
+			for(var j=0; j<brick_lines; j++){
 				if (bricks_board[i][j]==1) {
-					ctx.beginPath();
-					ctx.rect(j*brick_width, i*brick_height, brick_width, brick_height);
-					ctx.fill();
-					ctx.stroke();
+					bricks_draw(i,j);
 				}
 			}
 		}
