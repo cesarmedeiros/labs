@@ -60,13 +60,7 @@
 		var xspace = Math.floor((ball_x + ball_radius)/brick_width);
 		var yspace = Math.floor((ball_y - ball_radius - ball_speed)/brick_height);
 		
-/*		var valido = xspace>=0 && xspace<=9 && yspace>=0 && yspace<=4;
-		if (valido==true){
-		var elebi = document.getElementById('coordX');
-		elebi.value=bricks;
-		//alert("colidi");
-		}*/
-		return [Math.floor(xspace), Math.floor(yspace), (xspace>=0 && xspace<=9 && yspace>=0 && yspace<=4)];
+		return [xspace, yspace, (xspace>=0 && xspace<=9 && yspace>=0 && yspace<=4)];
 	}
 	
 	var bricks_draw = function(column, line){
